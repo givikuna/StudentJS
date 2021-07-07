@@ -29,7 +29,7 @@ http.createServer(function (req, res) {
             }
         } else if (infoFromURL.type == "content") {
             var contentTypeName = infoFromURL.img;
-            var filePathLocation = contentImagePath + contentTypeName + "-icon.png";
+            var filePathLocation = contentImagePath + contentTypeName;
             if (fs.existsSync(filePathLocation)) {
                 fs.readFile(filePathLocation, function (err, data) {
                     res.write(data);

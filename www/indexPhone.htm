@@ -70,6 +70,7 @@
         var currentFunction;
         var formDivInnerHtmlSaver;
         var addCurrentRow;
+        var phoneOrStudent = "phone";
 
         // --------------------------------------------------------------------------------Function;
 
@@ -148,9 +149,10 @@
         // -------------CONFIRM  THAT YOU WANT TO DELETE THE NUMBER;
         function confirmFunc(iValue) {
             if (confirm("Are you sure you want to delete this number?")) {
-                var url = "http://localhost:8084/?";
+                var url = "http://localhost:8086/?";
                 mainArray.splice(iValue, 1);
-                var param = "phoneNumber3523=" + JSON.stringify(mainArray) + "&iValueCurrent=" + iValue;
+                var jobName = "del"
+                var param = "phoneNumber3523=" + JSON.stringify(mainArray) + "&iValueCurrent=" + iValue + "&job=" + jobName + "&phoneOrStudent=" + phoneOrStudent;
                 xhttp.open("GET", url + param, true);
                 xhttp.onreadystatechange = function () {
                     if (this.readyState == 4) {
@@ -178,8 +180,9 @@
             if (currentFunction == "edit") {
                 hideShowAfterSubmit();
                 mainArray[currentRow] = document.getElementById("phoneText").value;
-                var url = "http://localhost:8088/?";
-                var param = "editFromIndexPhone35252007=" + JSON.stringify(mainArray);
+                var url = "http://localhost:8086/?";
+                var jobName = "edit";
+                var param = "editFromIndexPhone35252007=" + JSON.stringify(mainArray) + "&job=" + jobName + "&phoneOrStudent=" + phoneOrStudent;
                 xhttp.open("GET", url + param, true);
                 xhttp.onreadystatechange = function () {
                     if (this.readyState == 4) {
@@ -194,8 +197,9 @@
             } else if (currentFunction == "add") {
                 hideShowAfterSubmit();
                 var newArray = document.getElementById("phoneText").value;
-                var url = "http://localhost:8089/?";
-                var param = "addNew=" + JSON.stringify(newArray) + "&currentPart=" + addCurrentRow;
+                var url = "http://localhost:8086/?";
+                var jobName = "add";
+                var param = "addNew=" + JSON.stringify(newArray) + "&currentPart=" + addCurrentRow + "&job=" + jobName + "&phoneOrStudent=" + phoneOrStudent;
                 xhttp.open("GET", url + param, true);
                 xhttp.onreadystatechange = function () {
                     if (this.readyState == 4) {
@@ -244,6 +248,57 @@
 
 <!--
     [
+        {
+            "uid" : 1,
+            "name" : "TestUser1",
+            "img" : "1.jpg",
+            "phone" : "347-803-9647",
+            "secondPhone" : "569-283-4656",
+            "morePhones" : "y"
+        },
+        {
+            "uid" : 2,
+            "name" : "TestUser2",
+            "img" : "2.jpg",
+            "phone" : "135-546-5487,
+            "secondPhone" : "259-135-3645",
+            "morePhones" : "n"
+        },
+        {
+            "uid" : 3,
+            "name" : "TestUser3",
+            "img" : "3.jpg",
+            "phone" : "237-457-8658",
+            "secondPhone" : null,
+            "morePhones" : "n"
+        },
+        {
+            "uid" : 4,
+            "name" : "TestUser4",
+            "img" : "4.jpg",
+            "phone" : "456-324-9346",
+            "secondPhone" : "267-445-3466",
+            "morePhones" : "n"
+        },
+        {
+            "uid" : 5,
+            "name" : "TestUser5"
+            ,"img" : "5.jpg",
+            "phone" : "556-162-4567",
+            "secondPhone" : null,
+            "morePhones" : "n"
+        },
+        {
+            "uid" : 6,
+            "name" : "TestUser6",
+            "img" : "6.jpg",
+            "phone" : "564-536-5894",
+            "secondPhone" : "785-856-3789",
+            "morePhones" : "n"
+        }
+    ]
+
+    [
         [
             1,
             "347-803-9647",
@@ -274,4 +329,4 @@
             "785-856-3789"
         ]
     ]
--->
+-->s

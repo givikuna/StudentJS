@@ -45,7 +45,9 @@
         }
     </style>
     <script>
-        // -------------ToDo: FUNCTION FOR: WHEN YOU CLICK ON THE ADD MORE PHONES; (NOT USED) (SCRAPPED);
+        /*
+            download the image from the localhost link to the img folder.
+        */
 
         // 8086 - studentAdd.js;
         // 8083 - selectPhone.js;
@@ -63,9 +65,12 @@
         var mainArray = [];
         var currentRow;
         var addOrEditMode;
+        var phoneOrStudent = "student";
+        var imageSourceInfo = null;
 
         function onStart() {
             document.getElementById("formDiv").style.display = "none";
+            document.getElementById("profilePictureShow").style.display = "none";
             var url = "http://localhost:8087/?";
             xhttp.open("GET", url, true);
 
@@ -154,9 +159,10 @@
         }
 
         function confirmFuncDel(row) {
-            if (confirm("Are you sure you want to delete this number?")) {
-                var url = "http://localhost:8084/?";
-                var param = "number=" + mainArray[row].uid;
+            if (confirm("Are you sure you want to delete this student?")) {
+                var url = "http://localhost:8086/?";
+                var theJob = "del";
+                var param = "number=" + mainArray[row].uid + "&job=" + theJob + "&phoneOrStudent=" + phoneOrStudent;
                 xhttp.open("GET", url + param, true);
                 xhttp.onreadystatechange = function () {
                     if (this.readyState == 4) {
@@ -176,15 +182,15 @@
         function sendInfoAfterEdit() {
             var newArray = mainArray[currentRow];
             newArray.name = document.getElementById("nameInputId").value;
-            hideShowAfterSubmit();
-            var url = "http://localhost:8085/?";
-            var param = "edit=" + JSON.stringify(newArray);
+            // hideShowAfterSubmit();
+            var url = "http://localhost:8086/?";
+            var param = "edit=" + JSON.stringify(newArray) + "&job=" + addOrEditMode + "&phoneOrStudent=" + phoneOrStudent + "&imageInfo=" + imageSourceInfo;
             xhttp.open("GET", url + param, true);
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4) {
                     if (this.status == 200) {
                         mainArray = JSON.parse(this.responseText);
-                        fillTable();
+                        // fillTable();
                     } else {
                         alert("Server couldn\'t connect, try restarting website or contact us on gmail: thommaster10@gmail.com");
                     }
@@ -199,12 +205,13 @@
 
             hideShowAfterSubmit();
             var url = "http://localhost:8086/?";
-            var param = "addNew=" + JSON.stringify(newArray) + "&type=index";
+            var param = "addNew=" + JSON.stringify(newArray) + "&type=index&job=" + addOrEditMode + "&phoneOrStudent=" + phoneOrStudent;
             xhttp.open("GET", url + param, true);
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4) {
                     if (this.status == 200) {
                         mainArray = JSON.parse(this.responseText);
+                        imageSourceInfo = null;
                         fillTable();
                     } else {
                         alert("Server couldn\'t connect, try restarting website or contact us on gmail: thommaster10@gmail.com");
@@ -233,9 +240,37 @@
         // --------------HIDE OR SHOW AFTER SUBMITTED FUNCTION;
         function hideShowAfterSubmit() {
             document.getElementById("formDiv").style.display = "none";
+            document.getElementById("profilePictureShow").style.display = "none";
             document.getElementById("imageDiv").style.display = "block";
             document.getElementById("nameInputId").value = "";
+            document.getElementById("profilePictureShow").style.display = "none";
+            var image = document.getElementById('profilePictureOutput');
+            image.src = null;
         }
+
+        // --------------CLEAR THE FORM FUNCTION;
+        function clearTheForm() {
+            document.getElementById("nameInputId").value = "";
+            document.getElementById("profilePictureShow").style.display = "none";
+            var image = document.getElementById('profilePictureOutput');
+            image.src = null;
+            imageSourceInfo = null;
+        }
+
+        // --------------CANCEL THE FORM FUNCTION;
+        function cancelTheForm() {
+            hideShowAfterSubmit();
+        }
+
+        // --------------LOAD FILE FUNCTION
+        var loadFile = function (event) {
+            document.getElementById("profilePictureShow").style.display = "block";
+            var image = document.getElementById('profilePictureOutput');
+        };
+
+        /*
+            //
+        */
     </script>
 </head>
 
@@ -248,8 +283,28 @@
             onclick="addNew()">
     </div>
     <div id="formDiv">
-        <p> name: &nbsp;<input type="text" id="nameInputId"> </p>
-        <button id="afterEditButton" onclick="onClickSubmitButton()">Submit</button>
+        <p> Username: &nbsp;<input type="text" id="nameInputId"> <button onclick="clearTheForm()">Clear</button> </p>
+
+        <form action="localhost:8099/uploadProfilePicture" enctype="multipart/form-data" method="POST">
+            <span>Upload Profile Picture: <br> <small> .jpg files only </small> </span>
+            <!-- telling the user what to do in the form -->
+
+            <input type="file" name="mypic" accept="image/*" onchange="loadFile(event)" required /> <br>
+            <!-- button for the user to upload the file -->
+
+            <input onclick="onClickSubmitButton()" type="submit" value="submit">
+        </form>
+
+        <div id="profilePictureShow">
+            <p> Your Profile Picture:</p> <img id="profilePictureOutput" width="200" />
+            <!-- the place for the user to see their chosen profile pciture -->
+        </div>
+
+        <br>
+
+        <button id="afterEditButton" onclick="cancelTheForm()">Cancel</button>
+
+        <br>
     </div>
 </body>
 
@@ -258,34 +313,84 @@
 <!--
     [
         {
-            "uid": 1,
-            "name": "BugzFN",
-            "img": "1.jpg"
+            "uid" : 1,
+            "name" : "TestUser1",
+            "img" : "1.jpg",
+            "phone" : "347-803-9647",
+            "secondPhone" : "569-283-4656",
+            "morePhones" : "y"
         },
         {
-            "uid": 2,
-            "name": "ProofFN",
-            "img": "2.jpg"
+            "uid" : 2,
+            "name" : "TestUser2",
+            "img" : "2.jpg",
+            "phone" : "135-546-5487,
+            "secondPhone" : "259-135-3645",
+            "morePhones" : "n"
         },
         {
-            "uid": 3,
-            "name": "BizarreFN",
-            "img": "3.jpg"
+            "uid" : 3,
+            "name" : "TestUser3",
+            "img" : "3.jpg",
+            "phone" : "237-457-8658",
+            "secondPhone" : null,
+            "morePhones" : "n"
         },
         {
-            "uid": 4,
-            "name": "EminemFN",
-            "img": "4.jpg"
+            "uid" : 4,
+            "name" : "TestUser4",
+            "img" : "4.jpg",
+            "phone" : "456-324-9346",
+            "secondPhone" : "267-445-3466",
+            "morePhones" : "n"
         },
         {
-            "uid": 5,
-            "name": "KunivaFN",
-            "img": "5.jpg"
+            "uid" : 5,
+            "name" : "TestUser5"
+            ,"img" : "5.jpg",
+            "phone" : "556-162-4567",
+            "secondPhone" : null,
+            "morePhones" : "n"
         },
         {
-            "uid": 6,
-            "name": "DenaunPorterFN",
-            "img": "6.jpg"
+            "uid" : 6,
+            "name" : "TestUser6",
+            "img" : "6.jpg",
+            "phone" : "564-536-5894",
+            "secondPhone" : "785-856-3789",
+            "morePhones" : "n"
         }
+    ]
+
+    [
+        [
+            1,
+            "347-803-9647",
+            "569-283-4656",
+            "456-234-2457"
+        ],
+        [
+            2,
+            "135-546-5487",
+            "259-135-3645"
+        ],
+        [
+            3,
+            "237-457-8658"
+        ],
+        [
+            4,
+            "456-324-9346",
+            "267-445-3466"
+        ],
+        [
+            5,
+            "556-162-4567"
+        ],
+        [
+            6,
+            "564-536-5894",
+            "785-856-3789"
+        ]
     ]
 -->

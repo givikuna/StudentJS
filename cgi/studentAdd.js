@@ -11,7 +11,7 @@ http.createServer(function (req, res) {
         res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
         var newArray = JSON.parse(infoFromURL.addNew);
         var newUID = generatorIdModule.generatorInfo();
-        fs.writeFileSync('idGenerator.txt', newUID);
+        fs.writeFileSync('idGenerator.txt', newUID.toString());
         newArray.uid = newUID;
         newArray.img = newArray.uid + ".jpg";
 
